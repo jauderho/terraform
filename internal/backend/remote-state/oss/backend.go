@@ -35,21 +35,21 @@ import (
 func New() backend.Backend {
 	s := &schema.Backend{
 		Schema: map[string]*schema.Schema{
-			"access_key": &schema.Schema{
+			"access_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Alibaba Cloud Access Key ID",
 				DefaultFunc: schema.EnvDefaultFunc("ALICLOUD_ACCESS_KEY", os.Getenv("ALICLOUD_ACCESS_KEY_ID")),
 			},
 
-			"secret_key": &schema.Schema{
+			"secret_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Alibaba Cloud Access Secret Key",
 				DefaultFunc: schema.EnvDefaultFunc("ALICLOUD_SECRET_KEY", os.Getenv("ALICLOUD_ACCESS_KEY_SECRET")),
 			},
 
-			"security_token": &schema.Schema{
+			"security_token": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Alibaba Cloud Security Token",
@@ -63,7 +63,7 @@ func New() backend.Backend {
 				Description: "The RAM Role Name attached on a ECS instance for API operations. You can retrieve this from the 'Access Control' section of the Alibaba Cloud console.",
 			},
 
-			"region": &schema.Schema{
+			"region": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The region of the OSS bucket.",
@@ -82,13 +82,13 @@ func New() backend.Backend {
 				DefaultFunc: schema.EnvDefaultFunc("ALICLOUD_OSS_ENDPOINT", os.Getenv("OSS_ENDPOINT")),
 			},
 
-			"bucket": &schema.Schema{
+			"bucket": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The name of the OSS bucket",
 			},
 
-			"prefix": &schema.Schema{
+			"prefix": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The directory where state files will be saved inside the bucket",
@@ -102,7 +102,7 @@ func New() backend.Backend {
 				},
 			},
 
-			"key": &schema.Schema{
+			"key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The path of the state file inside the bucket",
@@ -122,14 +122,14 @@ func New() backend.Backend {
 				Default:     "",
 			},
 
-			"encrypt": &schema.Schema{
+			"encrypt": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "Whether to enable server side encryption of the state file",
 				Default:     false,
 			},
 
-			"acl": &schema.Schema{
+			"acl": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Object ACL to be applied to the state file",

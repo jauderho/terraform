@@ -232,7 +232,7 @@ func (c *ImportCommand) Run(args []string) int {
 	// one while we stabilize this feature.
 	newState, importDiags := ctx.Import(&terraform.ImportOpts{
 		Targets: []*terraform.ImportTarget{
-			&terraform.ImportTarget{
+			{
 				Addr: addr,
 				ID:   args[1],
 			},

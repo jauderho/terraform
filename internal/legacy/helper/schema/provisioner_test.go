@@ -47,7 +47,7 @@ func TestProvisionerValidate(t *testing.T) {
 			"Basic required field",
 			&Provisioner{
 				Schema: map[string]*Schema{
-					"foo": &Schema{
+					"foo": {
 						Required: true,
 						Type:     TypeString,
 					},
@@ -63,7 +63,7 @@ func TestProvisionerValidate(t *testing.T) {
 			"Basic required field set",
 			&Provisioner{
 				Schema: map[string]*Schema{
-					"foo": &Schema{
+					"foo": {
 						Required: true,
 						Type:     TypeString,
 					},
@@ -148,14 +148,14 @@ func TestProvisionerApply(t *testing.T) {
 			"Basic config",
 			&Provisioner{
 				ConnSchema: map[string]*Schema{
-					"foo": &Schema{
+					"foo": {
 						Type:     TypeString,
 						Optional: true,
 					},
 				},
 
 				Schema: map[string]*Schema{
-					"foo": &Schema{
+					"foo": {
 						Type:     TypeInt,
 						Optional: true,
 					},
@@ -205,14 +205,14 @@ func TestProvisionerApply(t *testing.T) {
 func TestProvisionerApply_nilState(t *testing.T) {
 	p := &Provisioner{
 		ConnSchema: map[string]*Schema{
-			"foo": &Schema{
+			"foo": {
 				Type:     TypeString,
 				Optional: true,
 			},
 		},
 
 		Schema: map[string]*Schema{
-			"foo": &Schema{
+			"foo": {
 				Type:     TypeInt,
 				Optional: true,
 			},
@@ -260,14 +260,14 @@ func TestProvisionerStop(t *testing.T) {
 func TestProvisionerStop_apply(t *testing.T) {
 	p := &Provisioner{
 		ConnSchema: map[string]*Schema{
-			"foo": &Schema{
+			"foo": {
 				Type:     TypeString,
 				Optional: true,
 			},
 		},
 
 		Schema: map[string]*Schema{
-			"foo": &Schema{
+			"foo": {
 				Type:     TypeInt,
 				Optional: true,
 			},

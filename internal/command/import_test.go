@@ -168,7 +168,7 @@ func TestImport_remoteState(t *testing.T) {
 	statePath := "imported.tfstate"
 
 	providerSource, close := newMockProviderSource(t, map[string][]string{
-		"test": []string{"1.2.3"},
+		"test": {"1.2.3"},
 	})
 	defer close()
 
@@ -281,7 +281,7 @@ func TestImport_initializationErrorShouldUnlock(t *testing.T) {
 	statePath := "imported.tfstate"
 
 	providerSource, close := newMockProviderSource(t, map[string][]string{
-		"test": []string{"1.2.3"},
+		"test": {"1.2.3"},
 	})
 	defer close()
 
@@ -821,7 +821,7 @@ func TestImportModuleVarFile(t *testing.T) {
 	}
 
 	providerSource, close := newMockProviderSource(t, map[string][]string{
-		"test": []string{"1.2.3"},
+		"test": {"1.2.3"},
 	})
 	defer close()
 

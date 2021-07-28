@@ -40,7 +40,7 @@ func mockProviderWithResourceTypeSchema(name string, schema *configschema.Block)
 				},
 			},
 			ResourceTypes: map[string]providers.Schema{
-				name: providers.Schema{Block: schema},
+				name: {Block: schema},
 			},
 		},
 	}
@@ -119,10 +119,10 @@ func simpleMockProvider() *MockProvider {
 		GetProviderSchemaResponse: &providers.GetProviderSchemaResponse{
 			Provider: providers.Schema{Block: simpleTestSchema()},
 			ResourceTypes: map[string]providers.Schema{
-				"test_object": providers.Schema{Block: simpleTestSchema()},
+				"test_object": {Block: simpleTestSchema()},
 			},
 			DataSources: map[string]providers.Schema{
-				"test_object": providers.Schema{Block: simpleTestSchema()},
+				"test_object": {Block: simpleTestSchema()},
 			},
 		},
 	}

@@ -391,10 +391,10 @@ func TestWorkspace_deleteWithState(t *testing.T) {
 	// create a non-empty state
 	originalState := &legacy.State{
 		Modules: []*legacy.ModuleState{
-			&legacy.ModuleState{
+			{
 				Path: []string{"root"},
 				Resources: map[string]*legacy.ResourceState{
-					"test_instance.foo": &legacy.ResourceState{
+					"test_instance.foo": {
 						Type: "test_instance",
 						Primary: &legacy.InstanceState{
 							ID: "bar",

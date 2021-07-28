@@ -408,9 +408,9 @@ func initCommands(
 	}
 
 	HiddenCommands = map[string]struct{}{
-		"env":             struct{}{},
-		"internal-plugin": struct{}{},
-		"push":            struct{}{},
+		"env":             {},
+		"internal-plugin": {},
+		"push":            {},
 	}
 
 }

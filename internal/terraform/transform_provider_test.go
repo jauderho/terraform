@@ -58,7 +58,7 @@ func TestProviderTransformer_ImportModuleChild(t *testing.T) {
 		tf := &ImportStateTransformer{
 			Config: mod,
 			Targets: []*ImportTarget{
-				&ImportTarget{
+				{
 					Addr: addrs.RootModuleInstance.
 						Child("child", addrs.NoKey).
 						ResourceInstance(

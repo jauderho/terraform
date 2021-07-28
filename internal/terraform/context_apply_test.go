@@ -1276,7 +1276,7 @@ func TestContext2Apply_destroyDependsOnStateOnly(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"bar"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "aws_instance",
@@ -1372,7 +1372,7 @@ func TestContext2Apply_destroyDependsOnStateOnlyModule(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"bar"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "aws_instance",
@@ -7872,7 +7872,7 @@ func TestContext2Apply_createBefore_depends(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"baz","instance":"bar"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "aws_instance",
@@ -8001,7 +8001,7 @@ func TestContext2Apply_singleDestroy(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"baz","instance":"bar"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "aws_instance",
@@ -8353,7 +8353,7 @@ func TestContext2Apply_ignoreChangesWithDep(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"eip-abc123","instance":"i-abc123"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "aws_instance",
@@ -8371,7 +8371,7 @@ func TestContext2Apply_ignoreChangesWithDep(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"eip-bcd234","instance":"i-bcd234"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "aws_instance",
@@ -9569,7 +9569,7 @@ func TestContext2Apply_destroyDataCycle(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"a"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.DataResourceMode,
 						Type: "null_data_source",
@@ -9892,7 +9892,7 @@ func TestContext2Apply_cbdCycle(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"a","require_new":"old","foo":"b"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "test_instance",
@@ -9900,7 +9900,7 @@ func TestContext2Apply_cbdCycle(t *testing.T) {
 					},
 					Module: addrs.RootModule,
 				},
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "test_instance",
@@ -9925,7 +9925,7 @@ func TestContext2Apply_cbdCycle(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"b","require_new":"old","foo":"c"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{
+				{
 					Resource: addrs.Resource{
 						Mode: addrs.ManagedResourceMode,
 						Type: "test_instance",
@@ -11621,7 +11621,7 @@ resource "test_resource" "a" {
 		proposed["id"] = cty.UnknownVal(cty.String)
 		return providers.PlanResourceChangeResponse{
 			PlannedState:    cty.ObjectVal(proposed),
-			RequiresReplace: []cty.Path{cty.Path{cty.GetAttrStep{Name: "value"}}},
+			RequiresReplace: []cty.Path{{cty.GetAttrStep{Name: "value"}}},
 		}
 	}
 

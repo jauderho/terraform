@@ -434,13 +434,13 @@ func TestContext2Plan_moduleExpand(t *testing.T) {
 	ty := schema.ImpliedType()
 
 	expected := map[string]struct{}{
-		`aws_instance.foo["a"]`:                          struct{}{},
-		`module.count_child[1].aws_instance.foo[0]`:      struct{}{},
-		`module.count_child[1].aws_instance.foo[1]`:      struct{}{},
-		`module.count_child[0].aws_instance.foo[0]`:      struct{}{},
-		`module.count_child[0].aws_instance.foo[1]`:      struct{}{},
-		`module.for_each_child["a"].aws_instance.foo[1]`: struct{}{},
-		`module.for_each_child["a"].aws_instance.foo[0]`: struct{}{},
+		`aws_instance.foo["a"]`:                          {},
+		`module.count_child[1].aws_instance.foo[0]`:      {},
+		`module.count_child[1].aws_instance.foo[1]`:      {},
+		`module.count_child[0].aws_instance.foo[0]`:      {},
+		`module.count_child[0].aws_instance.foo[1]`:      {},
+		`module.for_each_child["a"].aws_instance.foo[1]`: {},
+		`module.for_each_child["a"].aws_instance.foo[0]`: {},
 	}
 
 	for _, res := range plan.Changes.Resources {
@@ -3768,7 +3768,7 @@ func TestContext2Plan_requiresReplace(t *testing.T) {
 			Block: &configschema.Block{},
 		},
 		ResourceTypes: map[string]providers.Schema{
-			"test_thing": providers.Schema{
+			"test_thing": {
 				Block: &configschema.Block{
 					Attributes: map[string]*configschema.Attribute{
 						"v": {
@@ -5062,8 +5062,8 @@ func TestContext2Plan_createBeforeDestroy_depends_datasource(t *testing.T) {
 	}
 
 	wantAddrs := map[string]struct{}{
-		"aws_instance.foo[0]": struct{}{},
-		"aws_instance.foo[1]": struct{}{},
+		"aws_instance.foo[0]": {},
+		"aws_instance.foo[1]": {},
 	}
 	if !cmp.Equal(seenAddrs, wantAddrs) {
 		t.Errorf("incorrect addresses in changeset:\n%s", cmp.Diff(wantAddrs, seenAddrs))

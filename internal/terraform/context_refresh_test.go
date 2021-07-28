@@ -1176,8 +1176,8 @@ func TestContext2Refresh_orphanModule(t *testing.T) {
 			Status:    states.ObjectReady,
 			AttrsJSON: []byte(`{"id":"i-abc123"}`),
 			Dependencies: []addrs.ConfigResource{
-				addrs.ConfigResource{Module: addrs.Module{"module.child"}},
-				addrs.ConfigResource{Module: addrs.Module{"module.child"}},
+				{Module: addrs.Module{"module.child"}},
+				{Module: addrs.Module{"module.child"}},
 			},
 		},
 		mustProviderConfig(`provider["registry.terraform.io/hashicorp/aws"]`),
@@ -1188,7 +1188,7 @@ func TestContext2Refresh_orphanModule(t *testing.T) {
 		&states.ResourceInstanceObjectSrc{
 			Status:       states.ObjectReady,
 			AttrsJSON:    []byte(`{"id":"i-bcd23"}`),
-			Dependencies: []addrs.ConfigResource{addrs.ConfigResource{Module: addrs.Module{"module.grandchild"}}},
+			Dependencies: []addrs.ConfigResource{{Module: addrs.Module{"module.grandchild"}}},
 		},
 		mustProviderConfig(`provider["registry.terraform.io/hashicorp/aws"]`),
 	)

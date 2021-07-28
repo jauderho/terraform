@@ -35,7 +35,7 @@ func TestContextImport_basic(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -76,7 +76,7 @@ func TestContextImport_countIndex(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.IntKey(0),
 				),
@@ -138,7 +138,7 @@ func TestContextImport_collision(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -183,7 +183,7 @@ func TestContextImport_missingType(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -235,7 +235,7 @@ func TestContextImport_moduleProvider(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -291,7 +291,7 @@ func TestContextImport_providerModule(t *testing.T) {
 
 	_, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.Child("child", addrs.NoKey).ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -354,7 +354,7 @@ func TestContextImport_providerConfig(t *testing.T) {
 
 			state, diags := ctx.Import(&ImportOpts{
 				Targets: []*ImportTarget{
-					&ImportTarget{
+					{
 						Addr: addrs.RootModuleInstance.ResourceInstance(
 							addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 						),
@@ -409,7 +409,7 @@ func TestContextImport_providerConfigResources(t *testing.T) {
 
 	_, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -457,7 +457,7 @@ func TestContextImport_refresh(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -505,7 +505,7 @@ func TestContextImport_refreshNil(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -547,7 +547,7 @@ func TestContextImport_module(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.Child("child", addrs.IntKey(0)).ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -589,7 +589,7 @@ func TestContextImport_moduleDepth2(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.Child("child", addrs.IntKey(0)).Child("nested", addrs.NoKey).ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -631,7 +631,7 @@ func TestContextImport_moduleDiff(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.Child("child", addrs.IntKey(0)).ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -700,7 +700,7 @@ func TestContextImport_multiState(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -775,7 +775,7 @@ func TestContextImport_multiStateSame(t *testing.T) {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "aws_instance", "foo", addrs.NoKey,
 				),
@@ -874,7 +874,7 @@ resource "test_resource" "unused" {
 
 	state, diags := ctx.Import(&ImportOpts{
 		Targets: []*ImportTarget{
-			&ImportTarget{
+			{
 				Addr: addrs.RootModuleInstance.ResourceInstance(
 					addrs.ManagedResourceMode, "test_resource", "test", addrs.NoKey,
 				),

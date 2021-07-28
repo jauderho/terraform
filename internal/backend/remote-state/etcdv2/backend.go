@@ -16,22 +16,22 @@ import (
 func New() backend.Backend {
 	s := &schema.Backend{
 		Schema: map[string]*schema.Schema{
-			"path": &schema.Schema{
+			"path": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The path where to store the state",
 			},
-			"endpoints": &schema.Schema{
+			"endpoints": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "A space-separated list of the etcd endpoints",
 			},
-			"username": &schema.Schema{
+			"username": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Username",
 			},
-			"password": &schema.Schema{
+			"password": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Password",

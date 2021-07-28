@@ -51,7 +51,7 @@ func TestBlockImpliedType(t *testing.T) {
 		"blocks": {
 			&Block{
 				BlockTypes: map[string]*NestedBlock{
-					"single": &NestedBlock{
+					"single": {
 						Nesting: NestingSingle,
 						Block: Block{
 							Attributes: map[string]*Attribute{
@@ -62,13 +62,13 @@ func TestBlockImpliedType(t *testing.T) {
 							},
 						},
 					},
-					"list": &NestedBlock{
+					"list": {
 						Nesting: NestingList,
 					},
-					"set": &NestedBlock{
+					"set": {
 						Nesting: NestingSet,
 					},
-					"map": &NestedBlock{
+					"map": {
 						Nesting: NestingMap,
 					},
 				},
@@ -85,15 +85,15 @@ func TestBlockImpliedType(t *testing.T) {
 		"deep block nesting": {
 			&Block{
 				BlockTypes: map[string]*NestedBlock{
-					"single": &NestedBlock{
+					"single": {
 						Nesting: NestingSingle,
 						Block: Block{
 							BlockTypes: map[string]*NestedBlock{
-								"list": &NestedBlock{
+								"list": {
 									Nesting: NestingList,
 									Block: Block{
 										BlockTypes: map[string]*NestedBlock{
-											"set": &NestedBlock{
+											"set": {
 												Nesting: NestingSet,
 											},
 										},

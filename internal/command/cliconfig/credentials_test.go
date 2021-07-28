@@ -176,7 +176,7 @@ func TestCredentialsStoreForget(t *testing.T) {
 
 		got := readHostsInCredentialsFile(mockCredsFilename)
 		want := map[svchost.Hostname]struct{}{
-			svchost.Hostname("stored-locally.example.com"): struct{}{},
+			svchost.Hostname("stored-locally.example.com"): {},
 		}
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Fatalf("wrong credentials file content\n%s", diff)
@@ -225,7 +225,7 @@ func TestCredentialsStoreForget(t *testing.T) {
 		// Nothing should have changed in the saved credentials file
 		got := readHostsInCredentialsFile(mockCredsFilename)
 		want := map[svchost.Hostname]struct{}{
-			svchost.Hostname("stored-locally.example.com"): struct{}{},
+			svchost.Hostname("stored-locally.example.com"): {},
 		}
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Fatalf("wrong credentials file content\n%s", diff)

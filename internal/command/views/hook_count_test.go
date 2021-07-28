@@ -22,7 +22,7 @@ func TestCountHookPostDiff_DestroyDeposed(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"lorem": &legacy.InstanceDiff{DestroyDeposed: true},
+		"lorem": {DestroyDeposed: true},
 	}
 
 	for k := range resources {
@@ -50,10 +50,10 @@ func TestCountHookPostDiff_DestroyOnly(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"foo":   &legacy.InstanceDiff{Destroy: true},
-		"bar":   &legacy.InstanceDiff{Destroy: true},
-		"lorem": &legacy.InstanceDiff{Destroy: true},
-		"ipsum": &legacy.InstanceDiff{Destroy: true},
+		"foo":   {Destroy: true},
+		"bar":   {Destroy: true},
+		"lorem": {Destroy: true},
+		"ipsum": {Destroy: true},
 	}
 
 	for k := range resources {
@@ -81,19 +81,19 @@ func TestCountHookPostDiff_AddOnly(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"foo": &legacy.InstanceDiff{
+		"foo": {
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{RequiresNew: true},
+				"foo": {RequiresNew: true},
 			},
 		},
-		"bar": &legacy.InstanceDiff{
+		"bar": {
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{RequiresNew: true},
+				"foo": {RequiresNew: true},
 			},
 		},
-		"lorem": &legacy.InstanceDiff{
+		"lorem": {
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{RequiresNew: true},
+				"foo": {RequiresNew: true},
 			},
 		},
 	}
@@ -123,22 +123,22 @@ func TestCountHookPostDiff_ChangeOnly(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"foo": &legacy.InstanceDiff{
+		"foo": {
 			Destroy: false,
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{},
+				"foo": {},
 			},
 		},
-		"bar": &legacy.InstanceDiff{
+		"bar": {
 			Destroy: false,
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{},
+				"foo": {},
 			},
 		},
-		"lorem": &legacy.InstanceDiff{
+		"lorem": {
 			Destroy: false,
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{},
+				"foo": {},
 			},
 		},
 	}
@@ -200,10 +200,10 @@ func TestCountHookPostDiff_NoChange(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"foo":   &legacy.InstanceDiff{},
-		"bar":   &legacy.InstanceDiff{},
-		"lorem": &legacy.InstanceDiff{},
-		"ipsum": &legacy.InstanceDiff{},
+		"foo":   {},
+		"bar":   {},
+		"lorem": {},
+		"ipsum": {},
 	}
 
 	for k := range resources {
@@ -264,22 +264,22 @@ func TestCountHookApply_ChangeOnly(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"foo": &legacy.InstanceDiff{
+		"foo": {
 			Destroy: false,
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{},
+				"foo": {},
 			},
 		},
-		"bar": &legacy.InstanceDiff{
+		"bar": {
 			Destroy: false,
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{},
+				"foo": {},
 			},
 		},
-		"lorem": &legacy.InstanceDiff{
+		"lorem": {
 			Destroy: false,
 			Attributes: map[string]*legacy.ResourceAttrDiff{
-				"foo": &legacy.ResourceAttrDiff{},
+				"foo": {},
 			},
 		},
 	}
@@ -309,10 +309,10 @@ func TestCountHookApply_DestroyOnly(t *testing.T) {
 	h := new(countHook)
 
 	resources := map[string]*legacy.InstanceDiff{
-		"foo":   &legacy.InstanceDiff{Destroy: true},
-		"bar":   &legacy.InstanceDiff{Destroy: true},
-		"lorem": &legacy.InstanceDiff{Destroy: true},
-		"ipsum": &legacy.InstanceDiff{Destroy: true},
+		"foo":   {Destroy: true},
+		"bar":   {Destroy: true},
+		"lorem": {Destroy: true},
+		"ipsum": {Destroy: true},
 	}
 
 	for k := range resources {

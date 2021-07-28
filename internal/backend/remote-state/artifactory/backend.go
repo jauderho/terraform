@@ -14,30 +14,30 @@ import (
 func New() backend.Backend {
 	s := &schema.Backend{
 		Schema: map[string]*schema.Schema{
-			"username": &schema.Schema{
+			"username": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("ARTIFACTORY_USERNAME", nil),
 				Description: "Username",
 			},
-			"password": &schema.Schema{
+			"password": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("ARTIFACTORY_PASSWORD", nil),
 				Description: "Password",
 			},
-			"url": &schema.Schema{
+			"url": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("ARTIFACTORY_URL", nil),
 				Description: "Artfactory base URL",
 			},
-			"repo": &schema.Schema{
+			"repo": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The repository name",
 			},
-			"subpath": &schema.Schema{
+			"subpath": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "Path within the repository",
