@@ -64,6 +64,91 @@ func (e *MoveEndpointInModule) String() string {
 	return buf.String()
 }
 
+// Module returns the address of the module where the receiving address was
+// declared.
+func (e *MoveEndpointInModule) Module() Module {
+	return e.module
+}
+
+// InModuleInstance returns an AbsMovable address which concatenates the
+// given module instance address with the receiver's relative object selection
+// to produce one example of an instance that might be affected by this
+// move statement.
+//
+// The result is meaningful only if the given module instance is an instance
+// of the same module returned by the method Module. InModuleInstance doesn't
+// fully verify that (aside from some cheap/easy checks), but it will produce
+// meaningless garbage if not.
+func (e *MoveEndpointInModule) InModuleInstance(modInst ModuleInstance) AbsMoveable {
+	if len(modInst) != len(e.module) {
+		// We don't check all of the steps to make sure that their names match,
+		// because it would be expensive to do that repeatedly for every
+		// instance of a module, but if the lengths don't match then that's
+		// _obviously_ wrong.
+		panic("given instance address does not match module address")
+	}
+	switch relSubject := e.relSubject.(type) {
+	case ModuleInstance:
+		ret := make(ModuleInstance, 0, len(modInst)+len(relSubject))
+		ret = append(ret, modInst...)
+		ret = append(ret, relSubject...)
+		return ret
+	case AbsModuleCall:
+		retModAddr := make(ModuleInstance, 0, len(modInst)+len(relSubject.Module))
+		retModAddr = append(retModAddr, modInst...)
+		retModAddr = append(retModAddr, relSubject.Module...)
+		return relSubject.Call.Absolute(retModAddr)
+	case AbsResourceInstance:
+		retModAddr := make(ModuleInstance, 0, len(modInst)+len(relSubject.Module))
+		retModAddr = append(retModAddr, modInst...)
+		retModAddr = append(retModAddr, relSubject.Module...)
+		return relSubject.Resource.Absolute(retModAddr)
+	case AbsResource:
+		retModAddr := make(ModuleInstance, 0, len(modInst)+len(relSubject.Module))
+		retModAddr = append(retModAddr, modInst...)
+		retModAddr = append(retModAddr, relSubject.Module...)
+		return relSubject.Resource.Absolute(retModAddr)
+	default:
+		panic(fmt.Sprintf("unexpected move subject type %T", relSubject))
+	}
+}
+
+// ModuleCallTraversals returns both the address of the module where the
+// receiver was declared and any other module calls it traverses through
+// while selecting a particular object to move.
+//
+// This is a rather special-purpose function here mainly to support our
+// validation rule that a module can only traverse down into child modules
+// that belong to the same module package.
+func (e *MoveEndpointInModule) ModuleCallTraversals() (Module, []ModuleCall) {
+	// We're returning []ModuleCall rather than Module here to make it clearer
+	// that this is a relative sequence of calls rather than an absolute
+	// module path.
+
+	var steps []ModuleInstanceStep
+	switch relSubject := e.relSubject.(type) {
+	case ModuleInstance:
+		// We want all of the steps except the last one here, because the
+		// last one is always selecting something declared in the same module
+		// even though our address structure doesn't capture that.
+		steps = []ModuleInstanceStep(relSubject[:len(relSubject)-1])
+	case AbsModuleCall:
+		steps = []ModuleInstanceStep(relSubject.Module)
+	case AbsResourceInstance:
+		steps = []ModuleInstanceStep(relSubject.Module)
+	case AbsResource:
+		steps = []ModuleInstanceStep(relSubject.Module)
+	default:
+		panic(fmt.Sprintf("unexpected move subject type %T", relSubject))
+	}
+
+	ret := make([]ModuleCall, len(steps))
+	for i, step := range steps {
+		ret[i] = ModuleCall{Name: step.Name}
+	}
+	return e.module, ret
+}
+
 // SelectsModule returns true if the reciever directly selects either
 // the given module or a resource nested directly inside that module.
 //
@@ -145,6 +230,35 @@ func (e *MoveEndpointInModule) NestedWithin(other *MoveEndpointInModule) bool {
 	return false
 }
 
+// matchModuleInstancePrefix is an internal helper to decide whether the given
+// module instance address refers to either the module where the move endpoint
+// was declared or some descendent of that module.
+//
+// If so, it will split the given address into two parts: the "prefix" part
+// which corresponds with the module where the statement was declared, and
+// the "relative" part which is the remainder that the relSubject of the
+// statement might match against.
+//
+// The second return value is another example of our light abuse of
+// ModuleInstance to represent _relative_ module references rather than
+// absolute: it's a module instance address relative to the same return value.
+// Because the exported idea of ModuleInstance represents only _absolute_
+// module instance addresses, we mustn't expose that value through any exported
+// API.
+func (e *MoveEndpointInModule) matchModuleInstancePrefix(instAddr ModuleInstance) (ModuleInstance, ModuleInstance, bool) {
+	if len(e.module) > len(instAddr) {
+		return nil, nil, false // to short to possibly match
+	}
+	for i := range e.module {
+		if e.module[i] != instAddr[i].Name {
+			return nil, nil, false
+		}
+	}
+	// If we get here then we have a match, so we'll slice up the input
+	// to produce the prefix and match segments.
+	return instAddr[:len(e.module)], instAddr[len(e.module):], true
+}
+
 // MoveDestination considers a an address representing a module
 // instance in the context of source and destination move endpoints and then,
 // if the module address matches the from endpoint, returns the corresponding
@@ -172,22 +286,14 @@ func (m ModuleInstance) MoveDestination(fromMatch, toMatch *MoveEndpointInModule
 		return nil, false
 	}
 
-	// The given module instance must have a prefix that matches the
-	// declaration module of the two endpoints.
-	if len(fromMatch.module) > len(m) {
-		return nil, false // too short to possibly match
-	}
-	for i := range fromMatch.module {
-		if fromMatch.module[i] != m[i].Name {
-			return nil, false // this step doesn't match
-		}
-	}
-
 	// The rest of our work will be against the part of the reciever that's
 	// relative to the declaration module. mRel is a weird abuse of
 	// ModuleInstance that represents a relative module address, similar to
 	// what we do for MoveEndpointInModule.relSubject.
-	mPrefix, mRel := m[:len(fromMatch.module)], m[len(fromMatch.module):]
+	mPrefix, mRel, match := fromMatch.matchModuleInstancePrefix(m)
+	if !match {
+		return nil, false
+	}
 
 	// Our next goal is to split mRel into two parts: the match (if any) and
 	// the suffix. Our result will then replace the match with the replacement
@@ -267,8 +373,49 @@ func (r AbsResource) MoveDestination(fromMatch, toMatch *MoveEndpointInModule) (
 		return r.Resource.Absolute(toMod), true
 
 	case MoveEndpointResource:
-		// TODO: Implement
-		return AbsResource{}, false
+		fromRelSubject, ok := fromMatch.relSubject.(AbsResource)
+		if !ok {
+			// The only other possible type for a resource move is
+			// AbsResourceInstance, and that can never match an AbsResource.
+			return AbsResource{}, false
+		}
+
+		// fromMatch can only possibly match the reciever if the resource
+		// portions are identical, regardless of the module paths.
+		if fromRelSubject.Resource != r.Resource {
+			return AbsResource{}, false
+		}
+
+		// The module path portion of relSubject must have a prefix that
+		// matches the module where our endpoints were declared.
+		mPrefix, mRel, match := fromMatch.matchModuleInstancePrefix(r.Module)
+		if !match {
+			return AbsResource{}, false
+		}
+
+		// The remaining steps of the module path must _exactly_ match
+		// the relative module path in the "fromMatch" address.
+		if len(mRel) != len(fromRelSubject.Module) {
+			return AbsResource{}, false // can't match if lengths are different
+		}
+		for i := range mRel {
+			if mRel[i] != fromRelSubject.Module[i] {
+				return AbsResource{}, false // all of the steps must match
+			}
+		}
+
+		// If we got here then we have a match, and so our result is the
+		// module instance where the statement was declared (mPrefix) followed
+		// by the "to" relative address in toMatch.
+		toRelSubject := toMatch.relSubject.(AbsResource)
+		var mNew ModuleInstance
+		if len(mPrefix) > 0 || len(toRelSubject.Module) > 0 {
+			mNew = make(ModuleInstance, 0, len(mPrefix)+len(toRelSubject.Module))
+			mNew = append(mNew, mPrefix...)
+			mNew = append(mNew, toRelSubject.Module...)
+		}
+		ret := toRelSubject.Resource.Absolute(mNew)
+		return ret, true
 
 	default:
 		panic("unexpected object kind")
@@ -308,8 +455,49 @@ func (r AbsResourceInstance) MoveDestination(fromMatch, toMatch *MoveEndpointInM
 			}
 			return newResource.Instance(r.Resource.Key), true
 		case AbsResourceInstance:
-			// TODO: Implement
-			return AbsResourceInstance{}, false
+			fromRelSubject, ok := fromMatch.relSubject.(AbsResourceInstance)
+			if !ok {
+				// The only other possible type for a resource move is
+				// AbsResourceInstance, and that can never match an AbsResource.
+				return AbsResourceInstance{}, false
+			}
+
+			// fromMatch can only possibly match the reciever if the resource
+			// portions are identical, regardless of the module paths.
+			if fromRelSubject.Resource != r.Resource {
+				return AbsResourceInstance{}, false
+			}
+
+			// The module path portion of relSubject must have a prefix that
+			// matches the module where our endpoints were declared.
+			mPrefix, mRel, match := fromMatch.matchModuleInstancePrefix(r.Module)
+			if !match {
+				return AbsResourceInstance{}, false
+			}
+
+			// The remaining steps of the module path must _exactly_ match
+			// the relative module path in the "fromMatch" address.
+			if len(mRel) != len(fromRelSubject.Module) {
+				return AbsResourceInstance{}, false // can't match if lengths are different
+			}
+			for i := range mRel {
+				if mRel[i] != fromRelSubject.Module[i] {
+					return AbsResourceInstance{}, false // all of the steps must match
+				}
+			}
+
+			// If we got here then we have a match, and so our result is the
+			// module instance where the statement was declared (mPrefix) followed
+			// by the "to" relative address in toMatch.
+			toRelSubject := toMatch.relSubject.(AbsResourceInstance)
+			var mNew ModuleInstance
+			if len(mPrefix) > 0 || len(toRelSubject.Module) > 0 {
+				mNew = make(ModuleInstance, 0, len(mPrefix)+len(toRelSubject.Module))
+				mNew = append(mNew, mPrefix...)
+				mNew = append(mNew, toRelSubject.Module...)
+			}
+			ret := toRelSubject.Resource.Absolute(mNew)
+			return ret, true
 		default:
 			panic("invalid address type for resource-kind move endpoint")
 		}
